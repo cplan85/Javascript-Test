@@ -3,25 +3,37 @@ let car: Car;
 
 
 function submitCar() {
-    let errores = 0;
-    let plateInput = <HTMLInputElement>document.getElementById("plateInput");
-    let brandInput = <HTMLInputElement>document.getElementById("brandInput");
-    let colorInput = <HTMLInputElement>document.getElementById("colorInput");
+    //var errores = 0;
+    var plateInput = document.getElementById("plateInput");
+    var brandInput = document.getElementById("brandInput");
+    var colorInput = document.getElementById("colorInput");
 
-   
+    var matchPlate = /^([a-zA-Z-]){4}([0-9]){3}\b/;
 
-    const matchPlate = /^([a-zA-Z-]){4}([0-9]){3}\b/;
-    if (matchPlate.test(plateInput.value)) {
+    const isRequired = (value: string) => (value === "" ? false : true);
+
+    const isInputLetters = (input: string) => {
+        // are they letters and at least 3 characters
+        return !/^([a-zA-Z-]){3}/.test(input);
+      };
+
+    if(!isRequired(plateInput.value) || !isRequired(brandInput.value) || !isRequired(colorInput.value) ) {
+        alert("You must fill all fields");
+        return false;
+    }
+
+    else if (!matchPlate.test(plateInput.value)) {
         alert("Plate must be with 4 letters and 3 numbers");
         return false;
-      }
-
-	//EX1. Validar los campos de matricula, marca y color, antes de hacer el new Car
+    } else if (isInputLetters(brandInput.value) || isInputLetters(colorInput.value) ) {
+        alert("The brand and color must be letters and at least 3 characters");
+        return false;
+    } else 
+    //EX1. Validar los campos de matricula, marca y color, antes de hacer el new Car
     // tiene 4 letras y 3 numeros 
-	car = new Car(plateInput.value, colorInput.value, brandInput.value);
-	showVehicle();
-	showWheelForm();
-   
+    car = new Car(plateInput.value, colorInput.value, brandInput.value);
+    showVehicle();
+    showWheelForm();
 }
 
 function showVehicle() {
@@ -38,37 +50,34 @@ function showVehicle() {
 }
 
 function submitWheelForm() {
-    let errores = 0;
-	
-	//EX2. Solo hacer el "new Wheel" si las 4 ruedas son correctas
-	//EX3. Una rueda correcta deberá tener un diámetro entre 1 y 2. Crear una función para validarlas
+   // var errores = 0;
+    //EX2. Solo hacer el "new Wheel" si las 4 ruedas son correctas
+    //EX3. Una rueda correcta deberá tener un diámetro entre 1 y 2. Crear una función para validarlas
+    for (var i = 1; i <= 4; i++) {
+        var brandWheel = document.getElementById("brandWheel" + i);
+        var diameterWheel = document.getElementById("diameterWheel" + i);
 
-	for (let i = 1; i <= 4; i++) {
-		let brandWheel = <HTMLInputElement>document.getElementById("brandWheel" + i);
-		let diameterWheel = <HTMLInputElement>document.getElementById("diameterWheel" + i);
-
-		let wheel_generica = new Wheel(Number(diameterWheel.value), brandWheel.value);
-		car.addWheel(wheel_generica);
-
-	}
-	console.log(car)
-	showWheels();
-    
+        if( diameterWheel.value > 2 || diameterWheel.value < 1) {
+            alert("You must indicate all wheel diameters and the value must be between 1 and 2");
+            return false;
+        } else {
+            var wheel_generica = new Wheel(Number(diameterWheel.value), brandWheel.value);
+            car.addWheel(wheel_generica);
+        }
+       
+    }
+    console.log(car);
+    showWheels();
 }
 
 function showWheels() {
 	//EX4. Optimizar la función showWheels
     let wheelTitle = <HTMLInputElement>document.getElementById("wheelTitle");
-    let wheelOutput1 = <HTMLInputElement>document.getElementById("wheelOutput1");
-    let wheelOutput2 = <HTMLInputElement>document.getElementById("wheelOutput2");
-    let wheelOutput3 = <HTMLInputElement>document.getElementById("wheelOutput3");
-    let wheelOutput4 = <HTMLInputElement>document.getElementById("wheelOutput4");
-
     wheelTitle.innerText = "Wheels:";
-    wheelOutput1.innerText = "Wheel 1:  " + "Brand: " + car.wheels[0].brand + "  Diameter: " + car.wheels[0].diameter;
-    wheelOutput2.innerText = "Wheel 2:  " + "Brand: " + car.wheels[1].brand + "  Diameter: " + car.wheels[1].diameter;
-    wheelOutput3.innerText = "Wheel 3:  " + "Brand: " + car.wheels[2].brand + "  Diameter: " + car.wheels[2].diameter;
-    wheelOutput4.innerText = "Wheel 4:  " + "Brand: " + car.wheels[3].brand + "  Diameter: " + car.wheels[3].diameter;
+
+    for (let i = 1; i <= 4; i++) {
+        document.getElementById("wheelOutput" + i).innerText =`Wheel ${i}: Brand:  ${car.wheels[i-1].brand} Diameter: ${car.wheels[i-1].diameter}`
+    }
 }
 
 
